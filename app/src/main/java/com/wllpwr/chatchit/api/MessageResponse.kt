@@ -1,5 +1,5 @@
 package com.wllpwr.chatchit.api
 
 class MessageResponse {
-    lateinit var messages: ChatResponse
+    lateinit var messages: ChitChatResponse
 }

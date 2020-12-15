@@ -4,13 +4,14 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.wllpwr.chatchit.api.ChatApi
+import com.wllpwr.chatchit.api.ChitChatResponse
 import com.wllpwr.chatchit.api.MessageResponse
-import com.wllpwr.chatchit.api.ChatResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+
 
 class ChitterGitter {
 
@@ -37,14 +38,14 @@ class ChitterGitter {
             }
 
             override fun onResponse(
-                call: Call<MessageResponse>,
-                response: Response<MessageResponse>
+                    call: Call<MessageResponse>,
+                    response: Response<MessageResponse>
             ) {
                 Log.d(TAG, "Response received: ${response.body()}")
                 val messageResponse: MessageResponse? = response.body()
-                val chatResponse: ChatResponse? = messageResponse?.messages
-                val chatItems: List<Message> = chatResponse?.messageItems
-                    ?: mutableListOf()
+                val chitChatResponse: ChitChatResponse? = messageResponse?.messages
+                val chatItems: List<Message> = chitChatResponse?.messageItems
+                        ?: mutableListOf()
                 responseLiveData.value = chatItems
             }
         })
