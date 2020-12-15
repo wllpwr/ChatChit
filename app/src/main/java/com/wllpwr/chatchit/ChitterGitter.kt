@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.wllpwr.chatchit.api.ChatApi
 import com.wllpwr.chatchit.api.ChitChatResponse
-import com.wllpwr.chatchit.api.MessageResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -30,22 +29,21 @@ class ChitterGitter {
     fun fetchContents(): LiveData<List<Message>> {
 
         val responseLiveData: MutableLiveData<List<Message>> = MutableLiveData()
-        val messageRequest: Call<MessageResponse> = chatApi.fetchContents()
+        val messageRequest: Call<ChitChatResponse> = chatApi.fetchContents()
 
-        messageRequest.enqueue(object : Callback<MessageResponse> {
-            override fun onFailure(call: Call<MessageResponse>, t: Throwable) {
-                Log.e(TAG, "Failed to fetch messages", t)
+        messageRequest.enqueue(object : Callback<ChitChatResponse> {
+            override fun onFailure(call: Call<ChitChatResponse>, t: Throwable) {
+                Log.e(TAG, "Failed to fetch messages: $t")
             }
 
             override fun onResponse(
-                    call: Call<MessageResponse>,
-                    response: Response<MessageResponse>
+                call: Call<ChitChatResponse>,
+                response: Response<ChitChatResponse>
             ) {
                 Log.d(TAG, "Response received: ${response.body()}")
-                val messageResponse: MessageResponse? = response.body()
-                val chitChatResponse: ChitChatResponse? = messageResponse?.messages
-                val chatItems: List<Message> = chitChatResponse?.messageItems
-                        ?: mutableListOf()
+                val messageResponse: ChitChatResponse? = response.body()
+                val chatItems: List<Message> = messageResponse?.messageItems
+                    ?: mutableListOf()
                 responseLiveData.value = chatItems
             }
         })
