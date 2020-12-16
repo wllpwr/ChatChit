@@ -1,18 +1,20 @@
 package com.wllpwr.chatchit
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 
 class ChatListViewModel : ViewModel() {
+    val messageLiveData: LiveData<List<Message>> = ChitterGitter().fetchContents()
 
-    val messages = mutableListOf<Message>()
-
-    init {
-        for (i in 0 until 20) {
-            val message = Message()
-            message.messageNo = i
-            messages += message
-        }
-
+    fun postContents(string: String) {
+        ChitterGitter().postMessage(string)
     }
 
+    fun likeContents(id: String) {
+        ChitterGitter().likeMessage(id)
+    }
+
+    fun dislikeContents(id: String) {
+        ChitterGitter().dislikeMessage(id)
+    }
 }
