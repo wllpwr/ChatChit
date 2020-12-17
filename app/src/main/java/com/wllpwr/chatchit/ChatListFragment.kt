@@ -23,18 +23,17 @@ class ChatListFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         chatListViewModel =
-                ViewModelProviders.of(this).get(ChatListViewModel::class.java)
-        chatListViewModel.postContents("LARGE TEST MESSAGE")
+            ViewModelProviders.of(this).get(ChatListViewModel::class.java)
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_chat_list, container, false)
         chatRecyclerView =
-                view.findViewById(R.id.chat_recycler_view) as RecyclerView
+            view.findViewById(R.id.chat_recycler_view) as RecyclerView
         chatRecyclerView.layoutManager = LinearLayoutManager(context)
         return view
     }
@@ -42,11 +41,12 @@ class ChatListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         chatListViewModel.messageLiveData.observe(
-                viewLifecycleOwner,
-                { messages ->
-                    Log.d(TAG, "$messages")
-                    chatRecyclerView.adapter = ChatAdapter(messages)
-                }
+            viewLifecycleOwner,
+            { messages ->
+                Log.d(TAG, "$messages")
+                chatRecyclerView.adapter = ChatAdapter(messages)
+
+            }
         )
     }
 
@@ -57,44 +57,57 @@ class ChatListFragment : Fragment() {
     }
 
     private inner class ChatHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val idTextView: TextView = itemView.findViewById(R.id.id_box)
-        val likeButton: Button = itemView.findViewById(R.id.like_button)
-        val dislikeButton: Button = itemView.findViewById(R.id.dislike_button)
-        val messageTextView: TextView = itemView.findViewById(R.id.message_textview)
-        val clientTextView: TextView = itemView.findViewById(R.id.client_textView)
 
-        // this could be condensed
-        val bindId: (CharSequence) -> Unit = idTextView::setText
-        val bindLikes: (CharSequence) -> Unit = likeButton::setText
-        val bindDislikes: (CharSequence) -> Unit = dislikeButton::setText
-        val bindMessage: (CharSequence) -> Unit = messageTextView::setText
-        val bindClient: (CharSequence) -> Unit = clientTextView::setText
+        val likeButton: Button = view.findViewById(R.id.like_button)
+        val dislikeButton: Button = view.findViewById(R.id.dislike_button)
+        val messageTextView: TextView = view.findViewById(R.id.message_textview)
+        val clientTextView: TextView = view.findViewById(R.id.client_textView)
+
+        fun bind(message: Message) {
 
 
-        override fun onClick(p0: View?) {
-            chatListViewModel.likeContents()
+            likeButton.text = message.likes
+            dislikeButton.text = message.dislikes
+            messageTextView.text = message.message
+            clientTextView.text = message.client
+
+
+            dislikeButton.setOnClickListener {
+                ChitterGitter().dislikeContents(message.id)
+                var counter = (dislikeButton.text as String).toInt()
+                counter++
+                dislikeButton.text = counter.toString()
+                dislikeButton.isEnabled = false
+            }
+            likeButton.setOnClickListener {
+                ChitterGitter().likeContents(message.id)
+                var counter = (likeButton.text as String).toInt()
+                counter++
+                likeButton.text = counter.toString()
+                likeButton.isEnabled = false
+            }
         }
+
+
     }
 
     private inner class ChatAdapter(var messages: List<Message>) :
-            RecyclerView.Adapter<ChatHolder>() {
+        RecyclerView.Adapter<ChatHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatHolder {
             val view = LayoutInflater.from(parent.context).inflate(
-                    R.layout.list_item_message,
-                    parent,
-                    false
+                R.layout.list_item_message,
+                parent,
+                false
             )
+
             return ChatHolder(view)
         }
 
         override fun onBindViewHolder(holder: ChatHolder, position: Int) {
             val message = messages[position]
-            holder.bindId(message.id)
-            holder.bindMessage(message.message)
-            holder.bindLikes(message.likes)
-            holder.bindDislikes(message.dislikes)
-            holder.bindClient(message.client)
+            holder.bind(message)
+
         }
 
         override fun getItemCount(): Int = messages.size

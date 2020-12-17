@@ -19,9 +19,9 @@ class ChitterGitter {
 
     init {
         val retrofit: Retrofit = Retrofit.Builder()
-                .baseUrl("https://www.stepoutnyc.com/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
+            .baseUrl("https://www.stepoutnyc.com/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
 
         chatApi = retrofit.create(ChatApi::class.java)
 
@@ -38,16 +38,17 @@ class ChitterGitter {
             }
 
             override fun onResponse(
-                    call: Call<ChitChatResponse>,
-                    response: Response<ChitChatResponse>
+                call: Call<ChitChatResponse>,
+                response: Response<ChitChatResponse>
             ) {
                 Log.d(TAG, "Response received: ${response.body()}")
                 val messageResponse: ChitChatResponse? = response.body()
                 val chatItems: List<Message> = messageResponse?.messageItems
-                        ?: mutableListOf()
+                    ?: mutableListOf()
                 responseLiveData.value = chatItems
             }
         })
+
 
         return responseLiveData
     }
@@ -67,7 +68,7 @@ class ChitterGitter {
 
     }
 
-    fun likeMessage(id: String) {
+    fun likeContents(id: String) {
         val messagePost: Call<ResponseBody> = chatApi.likeMessage(id)
 
         messagePost.enqueue(object : Callback<ResponseBody> {
@@ -79,10 +80,9 @@ class ChitterGitter {
                 Log.d(TAG, "Server responded with: ${response.body()}")
             }
         })
-
     }
 
-    fun likeMessage(id: String) {
+    fun dislikeContents(id: String) {
         val messagePost: Call<ResponseBody> = chatApi.dislikeMessage(id)
 
         messagePost.enqueue(object : Callback<ResponseBody> {

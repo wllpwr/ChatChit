@@ -12,27 +12,31 @@ const val API_KEY = "&key=c16e71b1-377d-4bf2-bf06-65a18198fe58"
 
 interface ChatApi {
 
-    @GET("chitchat" +
-            CLIENT +
-            API_KEY
+    @GET(
+        "chitchat" +
+                CLIENT +
+                API_KEY
     )
     fun fetchContents(): Call<ChitChatResponse>
 
-    @POST("chitchat" +
-            CLIENT +
-            API_KEY
+    @POST(
+        "chitchat" +
+                CLIENT +
+                API_KEY
     )
     fun postMessage(@Query("message") message: String): Call<ResponseBody>
 
-    @GET("chitchat/like{id}" +
-            CLIENT +
-            API_KEY
+    @GET(
+        "chitchat/like/{id}" +
+                CLIENT +
+                API_KEY
     )
-    fun likeMessage(@Path("id") id: String): Call<ChitChatResponse>
+    fun likeMessage(@Path("id") id: String): Call<ResponseBody>
 
-    @GET("chitchat/dislike/{id}" +
-            CLIENT +
-            API_KEY
+    @GET(
+        "chitchat/dislike/{id}" +
+                CLIENT +
+                API_KEY
     )
-    fun dislikeMessage(@Path("id") id: String): Call<ChitChatResponse>
+    fun dislikeMessage(@Path("id") id: String): Call<ResponseBody>
 }

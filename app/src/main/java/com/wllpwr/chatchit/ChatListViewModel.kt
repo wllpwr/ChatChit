@@ -11,10 +11,10 @@ class ChatListViewModel : ViewModel() {
     }
 
     fun likeContents(id: String) {
-        ChitterGitter().likeMessage(id)
+        ChitterGitter().likeContents(id)
     }
 
     fun dislikeContents(id: String) {
-        ChitterGitter().dislikeMessage(id)
+        ChitterGitter().dislikeContents(id)
     }
 }
